@@ -22,6 +22,7 @@ public class ClienteServiceImpl implements ClienteService{
 	@Override
 	public List<ClienteEntity> findByLikeObject(ClienteEntity t) throws ServiceException {
 		try {
+			log.info("objeto Cliente en servicio = " , t);
 			return clienteRepository.findAll();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

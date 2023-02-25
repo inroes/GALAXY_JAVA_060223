@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "TBL_CLIENTE")
+@Table(name = "CLIENTE")
 @Entity(name = "ClienteEntity")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClienteEntity {
 
 	@Id
-	@Column(name = "CLIENTE_ID")
+	@Column(name = "ID_CLIENTE")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqCliente")
 	@SequenceGenerator(sequenceName = "SEQ_CLIENTE", allocationSize = 1, name = "seqCliente")
 	private Long id;
