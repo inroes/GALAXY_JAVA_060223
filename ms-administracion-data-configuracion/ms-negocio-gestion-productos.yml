@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+# Database
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true    
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/GJAVA_060223_BD_PRODUCTOS?serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: root
+    password: 123456
+    

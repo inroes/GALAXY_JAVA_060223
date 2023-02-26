@@ -1,0 +1,13 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: ms-admin-config-server
+#Configuracion Local
+  profiles:
+    active: native
+  cloud:
+    config:
+      server: 
+        native:
+          searchLocations: file:///E:/JAVA CURSOS/2023_02 GALAXY - Microservicios con Java 17/ProyectoClases/ms-administracion-data-configuracion
