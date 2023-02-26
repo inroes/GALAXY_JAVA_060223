@@ -3,11 +3,25 @@ server:
 spring:
   application:
     name: ms-admin-config-server
-#Configuracion Local
-  profiles:
-    active: native
+    
+##Configuracion Local
+#  profiles:
+#    active: native
+#  cloud:
+#    config:
+#      server: 
+#        native:
+#          searchLocations: file:///E:/JAVA CURSOS/2023_02 GALAXY - Microservicios con Java 17/ProyectoClases/ms-administracion-data-configuracion
+#          
+          
+#Configuracion Cloud (git)
   cloud:
     config:
-      server: 
-        native:
-          searchLocations: file:///E:/JAVA CURSOS/2023_02 GALAXY - Microservicios con Java 17/ProyectoClases/ms-administracion-data-configuracion
+      server:
+        git:
+          uri: https://github.com/inroes/GALAXY_JAVA_060223.git
+          searchPaths: ms-administracion-data-configuracion
+          #username: ${USER_NAME}
+          #password: ${USER_PASSWORD} <- TOKEN ( con privilegios de lectura y escritura)
+          default-label: 02.-ms-config-server
+          cloneOnStart: true
