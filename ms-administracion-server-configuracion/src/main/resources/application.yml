@@ -2,7 +2,7 @@ server:
   port: 8888
 spring:
   application:
-    name: ms-admin-config-server
+    name: ms-administracion-server-configuracion
     
 ##Configuracion Local
 #  profiles:
@@ -23,5 +23,5 @@ spring:
           searchPaths: ms-administracion-data-configuracion
           #username: ${USER_NAME}
           #password: ${USER_PASSWORD} <- TOKEN ( con privilegios de lectura y escritura)
-          default-label: 02.-ms-config-server
+          default-label: 03.-ms-registry-server
           cloneOnStart: true
