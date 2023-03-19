@@ -22,3 +22,7 @@ VALUES(SEQ_CLIENTE.NEXTVAL,'ENTEL PERU','20544987200','AV. AREQUIPA-LIMA CERCADO
 commit;
 
 select * from Cliente;
+
+SELECT DISTINCT owner, object_name
+FROM all_objects
+WHERE object_type = 'TABLE' AND owner = 'USRBDCOPIAS'

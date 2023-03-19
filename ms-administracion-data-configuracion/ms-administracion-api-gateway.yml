@@ -1,0 +1,60 @@
+server:
+  port: 8887
+
+# Eureka Discovery Client
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+  client:
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8889/eureka
+
+# Mapeo de Microservicios
+spring:
+  cloud:
+    gateway:      
+      routes:
+        - id: id-ms-clientes
+          uri: lb://MS-NEGOCIO-GESTION-CLIENTES
+          predicates:
+            - Path=/ms-clientes/**
+          filters:         
+            - RewritePath=/ms-clientes/(?<path>.*), /$\{path}
+          
+        - id: id-ms-productos
+          uri: lb://MS-NEGOCIO-GESTION-PRODUCTOS
+          predicates:
+            - Path=/ms-productos/**
+          filters:         
+            - RewritePath=/ms-productos/(?<path>.*), /$\{path}
+        
+        #servicio externo
+        - id: albums   
+          uri: https://jsonplaceholder.typicode.com/albums
+          predicates:
+            - Path=/albums
+      discovery:
+        #The Gateway can be configured to create routes based on services registered with a DiscoveryClient compatible service registry
+        #make sure a DiscoveryClient implementation is on the classpath and enabled (such as Netflix Eureka, Consul or Zookeeper)
+        locator: 
+          enabled: true
+          lower-case-service-id: true
+          #lowerCaseServiceId: true
+    #loadbalancer:
+      #librería por defecto que viene en Spring, para indicarle que el load balancer no lo realice eon rribon sino con api gateway
+      #ribbon:
+      #  enabled: false
+        
+# Activacion de endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    gateway:
+      enabled: true
+    health:
+      show-details: always
+    

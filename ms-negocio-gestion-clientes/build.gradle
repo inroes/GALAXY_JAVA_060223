@@ -21,7 +21,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
-	//config-client
+	// config-client
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	// Health check
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
