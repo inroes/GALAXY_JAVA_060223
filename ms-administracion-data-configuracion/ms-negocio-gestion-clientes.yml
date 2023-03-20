@@ -1,6 +1,5 @@
 server:
-  port: 0 
-  #port: 8081
+  port: 8081
 
 #Database
 #spring.jpa.hibernate.ddl-auto=create

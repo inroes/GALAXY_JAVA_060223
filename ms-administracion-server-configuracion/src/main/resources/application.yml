@@ -23,5 +23,5 @@ spring:
 #          searchPaths: ms-administracion-data-configuracion
 #          #username: ${USER_NAME}
 #          #password: ${USER_PASSWORD} <- TOKEN ( con privilegios de lectura y escritura)
-#          default-label: 04.-ms-api-gateway
+#          default-label: 03.-ms-registry-server
 #          cloneOnStart: true
