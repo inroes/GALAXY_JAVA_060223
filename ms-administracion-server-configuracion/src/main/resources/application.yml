@@ -5,23 +5,23 @@ spring:
     name: ms-administracion-server-configuracion
     
 #Configuracion Local
-  profiles:
-    active: native
-  cloud:
-    config:
-      server: 
-        native:
-          searchLocations: file:///E:/JAVA CURSOS/2023_02 GALAXY - Microservicios con Java 17/ProyectoClases/ms-administracion-data-configuracion
-          
-          
-##Configuracion Cloud (git)
+#  profiles:
+#    active: native
 #  cloud:
 #    config:
-#      server:
-#        git:
-#          uri: https://github.com/inroes/GALAXY_JAVA_060223.git
-#          searchPaths: ms-administracion-data-configuracion
-#          #username: ${USER_NAME}
-#          #password: ${USER_PASSWORD} <- TOKEN ( con privilegios de lectura y escritura)
-#          default-label: 03.-ms-registry-server
-#          cloneOnStart: true
+#      server: 
+#        native:
+#          searchLocations: file:///E:/JAVA CURSOS/2023_02 GALAXY - Microservicios con Java 17/ProyectoClases/ms-administracion-data-configuracion
+#          
+          
+##Configuracion Cloud (git)
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/inroes/GALAXY_JAVA_060223.git
+          searchPaths: ms-administracion-data-configuracion
+          #username: ${USER_NAME}
+          #password: ${USER_PASSWORD} <- TOKEN ( con privilegios de lectura y escritura)
+          default-label: 03.-ms-registry-server
+          cloneOnStart: true
