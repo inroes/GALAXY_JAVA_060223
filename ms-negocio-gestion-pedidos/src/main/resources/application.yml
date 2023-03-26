@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: ms-negocio-gestion-pedidos
+  config:
+    import: optional:configserver:http://localhost:8888
+
+#server:
+#  port: 8081
+
+## Database
+##spring.jpa.hibernate.ddl-auto=create
+#spring:
+#  jpa:
+#    show-sql: true    
+#  datasource:
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    url: jdbc:oracle:thin:@127.0.0.1:1521:xe
+#    username: GJAVA_060223_BD_CLIENTES
+#    password: oracle

@@ -1,0 +1,43 @@
+server:
+  #port: 0
+  port: 8083
+  
+#Database
+#spring.jpa.hibernate.ddl-auto=create
+spring:
+  jpa:
+    show-sql: true    
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@127.0.0.1:1521:xe
+    username: GJAVA_060223_BD_PEDIDOS
+    password: oracle
+
+# Registry Client - Eureka Discovery Client
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+  client:
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8889/eureka
+      
+#Metrics related configurations
+management:
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+ 
