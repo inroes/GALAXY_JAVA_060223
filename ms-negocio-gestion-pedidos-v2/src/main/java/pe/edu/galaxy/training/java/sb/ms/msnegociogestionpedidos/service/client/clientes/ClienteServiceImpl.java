@@ -37,7 +37,7 @@ public class ClienteServiceImpl implements ClienteService{
 	private final RestTemplate restTemplate; 
 	// como esta con @RequiredArgsConstructor  debe estar inyectado por lombok
 	
-	private DiscoveryClient discoveryClient;
+	private final DiscoveryClient discoveryClient;
 	private String msName = "ms-negocio-gestion-clientes"; // host.docker.internal:ms-negocio-gestion-clientes:8082
 	
 	private String url="";
