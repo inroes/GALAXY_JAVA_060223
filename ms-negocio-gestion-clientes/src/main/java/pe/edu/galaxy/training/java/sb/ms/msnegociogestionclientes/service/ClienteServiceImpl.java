@@ -32,8 +32,13 @@ public class ClienteServiceImpl implements ClienteService{
 
 	@Override
 	public Optional<ClienteEntity> findById(Long id) throws ServiceException {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+		try {
+			log.info("objeto Cliente en servicio = " , id);
+			return clienteRepository.findById(id);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ServiceException();
+		}
 	}
 
 	@Override

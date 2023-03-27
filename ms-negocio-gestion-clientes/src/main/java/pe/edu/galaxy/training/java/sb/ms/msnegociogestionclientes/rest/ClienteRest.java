@@ -2,6 +2,7 @@ package pe.edu.galaxy.training.java.sb.ms.msnegociogestionclientes.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +16,7 @@ import pe.edu.galaxy.training.java.sb.ms.msnegociogestionclientes.service.Servic
 @RestController
 @RequestMapping("/v1/clientes")
 public class ClienteRest {
+	
 	private final ClienteService clienteService;
 	
 	@GetMapping
@@ -30,6 +32,18 @@ public class ClienteRest {
 		}	
 	}
 	
+	@GetMapping("/{id}")
+	public ResponseEntity<?> findById(@PathVariable Long id) throws ServiceException
+	{
+		try {
+			log.info("objeto Cliente en EndPoint = ");
+
+			return ResponseEntity.ok(clienteService.findById(id).get());
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+			throw new ServiceException();
+		}	
+	}
 	
 	/*
 	 * 	@GetMapping("/by-razonSocial")
