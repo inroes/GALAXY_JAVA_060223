@@ -1,0 +1,276 @@
+package pe.edu.galaxy.training.java.fs.appapidemo.v1.repository.general.usp;
+
+import java.util.List;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.entity.general.ProductoEntity;
+
+public interface ProductoUSPRepository {
+
+	List<ProductoEntity>  findByLikeNombreUSP(String nombre);  
+	
+	
+}
+
+
+package pe.edu.galaxy.training.java.fs.appapidemo.v1.repository.general.usp;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+import org.springframework.stereotype.Repository;
+import lombok.extern.slf4j.Slf4j;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.entity.general.ProductoEntity;
+
+@Slf4j
+@Repository
+public class ProductoUSPRepositoryImpl implements ProductoUSPRepository {
+	
+	@PersistenceContext
+	private EntityManager em;
+
+	public ProductoUSPRepositoryImpl() {
+		
+	}
+
+	@Override
+	public List<ProductoEntity> findByLikeNombreUSP(String nombre) {
+		
+		StoredProcedureQuery spq = em.createNamedStoredProcedureQuery("producto.findByLikeNombre");
+		
+		spq.setParameter("P_NOMBRE", nombre);
+		
+		log.info("nombre",nombre);
+		
+		if (spq.execute()) {
+			
+			List<ProductoEntity> lstProductoEntity = spq.getResultList();
+			
+			return lstProductoEntity;
+		}
+		return null;
+	}
+
+}
+
+
+package pe.edu.galaxy.training.java.fs.appapidemo.v1.entity.general;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.ParameterMode;
+
+/*
+ *  Matricula del Procedimiento Almacenado
+ */
+@NamedStoredProcedureQueries(
+		{
+				@NamedStoredProcedureQuery(
+					name="producto.findByLikeNombre", 
+					procedureName="PKG_PRODUCTO.USP_LISTAR_X_NOMBRE",
+					resultClasses= ProductoEntity.class,
+					parameters={
+								@StoredProcedureParameter(mode=ParameterMode.REF_CURSOR,name="P_CURSOR", type=void.class ),
+								@StoredProcedureParameter(mode=ParameterMode.IN,name="P_NOMBRE", type=String.class )
+						}					
+				)
+		}
+		)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "ProductoEntity")
+@Table(name = "TBL_PRODUCTO")
+public class ProductoEntity {
+	
+	@Id
+	@Column(name = "ID_PRODUCTO")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqProducto")
+    @SequenceGenerator(sequenceName = "SEQ_PRODUCTO", allocationSize = 1, name = "seqProducto")
+	private Long id;
+	
+	@Size(min = 10, max = 120, message = "El nombre debe tener como mínimo {min} y máximo {max} caracteres")
+	@Column(name = "NOMBRE")
+	private String nombre;
+	
+	@Positive(message = "El precio debe ser positivo")
+	@Column(name = "PRECIO")
+	private Double precio;
+	
+	@Column(name = "STOCK")
+	private Integer stock;
+	
+	@Column(name = "ESTADO")
+	private String estado;
+}
+
+
+package pe.edu.galaxy.training.java.fs.appapidemo.v1.service.general.impl;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.dto.general.ClienteDTO;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.dto.general.ProductoDTO;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.entity.general.ProductoEntity;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.mappers.ProductoMapper;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.repository.general.ProductoRepository;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.repository.general.usp.ProductoUSPRepository;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.service.exceptions.ServiceException;
+import pe.edu.galaxy.training.java.fs.appapidemo.v1.service.general.service.ProductoService;
+
+@Service
+public class ProductoServiceImpl implements ProductoService {
+
+	@Autowired
+	private ProductoMapper productoMapper;
+
+	@Autowired
+	private ProductoRepository productoRepository;
+	
+	@Autowired
+	private ProductoUSPRepository productoUSPRepository;
+	
+	@Override
+	public ProductoDTO findById(Long id) throws ServiceException {
+		try {
+			ProductoEntity productoEntity = productoRepository.findById(id).orElse(null);
+			return productoMapper.toDTO(productoEntity);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public List<ProductoDTO> findByLikeObject(ProductoDTO productoDTO) throws ServiceException {
+		try {
+			List<ProductoEntity> lstProductoEntities = productoRepository
+					.findByLikeNombre("%" + productoDTO.getNombre() + "%");
+			return lstProductoEntities.stream().map(c -> productoMapper.toDTO(c)).collect(Collectors.toList());
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public ProductoDTO save(ProductoDTO productoDTO) throws ServiceException {
+		try {
+			productoDTO.setEstado("1");
+			return productoMapper.toDTO(productoRepository.save(productoMapper.toEntity(productoDTO)));
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public ProductoDTO update(ProductoDTO productoDTO) throws ServiceException {
+		try {
+			Optional<ProductoEntity> optProducto = productoRepository.findById(productoDTO.getId());
+			if (optProducto.isPresent()) {
+				ProductoEntity retProducto = optProducto.get();
+				BeanUtils.copyProperties(productoDTO, retProducto);
+				return productoMapper.toDTO(productoRepository.save(retProducto));
+			}
+			return null;
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public void delete(Long id) throws ServiceException {
+		try {
+			productoRepository.delete(id);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	@Override
+	public Boolean actualizarStock(Long id, Double stock) throws ServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ProductoDTO> findByLikeNombrePagin(Pageable pageable, String nombre) throws ServiceException {
+		
+		Page<ProductoEntity> lstProductoEntities = productoRepository.findByLikeNombrePagin(pageable, "%" + nombre + "%");
+		
+		List<ProductoDTO> lstProductoDTOs= lstProductoEntities.getContent().stream().map(c -> productoMapper.toDTO(c)).collect(Collectors.toList());
+		
+		return lstProductoDTOs;
+	}
+
+	@Override
+	public List<ProductoDTO> findByLikeNombreUSP(String nombre) throws ServiceException {
+		try {
+			List<ProductoEntity> lstProductoEntities = productoUSPRepository.findByLikeNombreUSP(nombre);
+			
+			return lstProductoEntities.stream().map(c -> productoMapper.toDTO(c)).collect(Collectors.toList());
+			
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
+}
+
+CREATE OR REPLACE 
+PACKAGE PKG_PRODUCTO AS 
+
+   PROCEDURE USP_LISTAR_X_NOMBRE(
+         P_CURSOR  OUT SYS_REFCURSOR,
+         P_NOMBRE  IN  tbl_producto.nombre%tYPE
+   );
+   
+END PKG_PRODUCTO;
+
+
+CREATE OR REPLACE
+PACKAGE BODY PKG_PRODUCTO AS
+
+  PROCEDURE USP_LISTAR_X_NOMBRE(
+         P_CURSOR  OUT SYS_REFCURSOR,
+         P_NOMBRE  IN  tbl_producto.nombre%tYPE
+   ) AS
+  BEGIN
+    OPEN P_CURSOR
+        FOR
+    SELECT
+        ID_PRODUCTO,
+        NOMBRE,
+        PRECIO,
+        STOCK,
+        ESTADO 
+    FROM 
+        TBL_PRODUCTO
+    WHERE
+        UPPER(NOMBRE) LIKE '%'||UPPER(P_NOMBRE)||'%'
+        AND ESTADO='1';
+
+  END USP_LISTAR_X_NOMBRE;
+
+END PKG_PRODUCTO;

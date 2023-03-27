@@ -38,7 +38,7 @@ public class ClienteServiceImpl implements ClienteService{
 	// como esta con @RequiredArgsConstructor  debe estar inyectado por lombok
 	
 	private final DiscoveryClient discoveryClient;
-	private String msName = "ms-negocio-gestion-clientes"; // host.docker.internal:ms-negocio-gestion-clientes:8082
+	private final String msName = "ms-negocio-gestion-clientes"; // host.docker.internal:ms-negocio-gestion-clientes:8082
 	
 	private String url="";
 	
